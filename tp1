@@ -1,0 +1,34 @@
+# fonction 1: salaire net avant impôt
+brutToNet1 <- function(brut) 
+{
+  net <- brut*0.78
+  return (net)
+}
+# fonction2: salaire net après impôt
+brutToNet2 <- function(brut,contrat) 
+{
+  if (contrat == "cadre") {
+    return(brut*0.715)
+  }
+  else if (contrat == "non_cadre"){
+    return(brut*0.675)
+  }
+  else{
+    return("ERROR: contract unknow")
+  }
+}
+# fonction 3
+brutToNet3 <- function(brut,contrat,source=0.075,tmps=1)
+{
+  if (source > 0 & source <=1 & tmps > 0 & tmps<=1)
+  {salaire <- list(brut,brutToNet2(brut,contrat)*tmps)
+  return(salaire)}
+  else {return("ERROR : rate and time must be in range(0,1)")}
+}
+
+brut <- as.numeric(readline(prompt=" Salaire Brut: "))
+contrat <- readline(prompt = "contrat: ")
+temps <- as.numeric(readline(prompt="temps de travail:"))
+brutToNet1(brut)
+brutToNet2(brut,contrat)
+brutToNet3(brut,contrat,tmps=temps)
