@@ -25,10 +25,62 @@ brutToNet3 <- function(brut,contrat,source=0.075,tmps=1)
   return(salaire)}
   else {return("ERROR : rate and time must be in range(0,1)")}
 }
+# fonction 4
+netAnnuelToImpot <- function(net)
+{if (net < 10777)
+{result <- net}
+else if (net < 27478)
+{result <- net*0.89}
+else if (net < 78570)
+{result <- net * 0.7}
+else if (net < 168994)
+{result <- net * 0.59}
+else {result <- net * 0.55}
+return(result)
+}
 
+# input
 brut <- as.numeric(readline(prompt=" Salaire Brut: "))
 contrat <- readline(prompt = "contrat: ")
 temps <- as.numeric(readline(prompt="temps de travail:"))
+# activation fonction
 brutToNet1(brut)
 brutToNet2(brut,contrat)
 brutToNet3(brut,contrat,tmps=temps)
+netAnnuelToImpot(180000)
+
+# juste prix
+dificulté <- readline(prompt = "facile/dure")
+essais <- 0
+game <- T
+prix <- sample(x=1:100,size=1)
+while (game == T)
+{
+estimation <- readline(prompt = "un nombre ?")
+essais <- essais+1
+if (prix == estimation){
+  print("gagné")
+  game <- F}
+else if (prix>estimation) {print('c est plus')}
+else if (prix<estimation) {print('c est moins')}
+if (essais >= 10 & dificulté == "dure")
+{print("perdu")
+  game = F}
+}
+# pierre, feuille, ciseaux
+nb_parties <- readline(prompt = "combien de parties")
+for (i in 1:nb_parties)
+{
+choice <- readline(prompt = "papier,pierre,ciseaux?")
+bot_choice <- sample(x = c("pierre","papier","ciseaux"),size=1)
+if (bot_choice == "pierre" & choice == "papier") {resultat <- "you win"}
+else if (bot_choice == "pierre" & choice == "ciseaux") {resultat <- "bot win"}
+else if (bot_choice == "papier" & choice == "ciseaux") {resultat <- "you win"}
+else if (bot_choice == "papier" & choice == "pierre") {resultat <- "bot win"}
+else if (bot_choice == "ciseaux" & choice == "papier") {resultat <- "bot win"}
+else if (bot_choice == "ciseaux" & choice == "pierre") {resultat <- "you win"}
+else if (bot_choice ==  choice ) {resultat <- "égalité"}
+print(c(bot_choice,resultat))
+ }
+
+
