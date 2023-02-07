@@ -1,0 +1,117 @@
+#  Exercice 1 : Importer les données
+# a. Importez le jeu de données pokemon.xlsx à l’aide du package readxl.
+
+#install.packages(readxl)
+#library(readxl)
+df <- read_excel(path="pokemon.xlsx",sheet="pokemon")
+# b. Combien de lignes, colonnes sont présentes dans ce dataset (utilisez les fonctions adaptées) ?
+dim(df)
+#   c. Affichez le nom des colonnes.
+names(df)
+# d. Affichez le type des colonnes avec la fonction adaptée.
+str(df)
+# e. On souhaite analyser les variables generation, is_legendary, et type en tant que variables qualitatives. Modifier le type de ces variables pour les transformer en type factor.
+df$generation <- as.factor(df$generation)
+df$is_legendary <- as.factor(df$is_legendary)
+df$type <- as.factor(df$type)
+# f. Combien de niveaux (levels) sont présents dans ces variables ?
+#   g. Affichez un résumé des données avec la fonction adaptée.
+table(df$generation)
+table(df$is_legendary)
+table(df$type)
+## Exercice 2 : Statistiques descriptives
+
+# a. Déterminer la moyenne de la variable `weight_kg`.
+mean(df$weight_kg,na.rm = TRUE)
+# b. Déterminer la médiane de la variable `weight_kg`.
+range(df$weight_kg,na.rm = TRUE)
+quantile(df$weight_kg,na.rm = TRUE,probs = 0.5)
+# d. Déterminer les quartiles de la variable `height_m`.
+quantile(df$height_m,na.rm = TRUE)
+# e. Déterminer les déciles de la variable `height_m`.
+quantile(df$height_m,na.rm = TRUE, seq(0,1,0.1))
+# f. Déterminer la variance et l'écart-type de la variable `weight_kg`.
+var(df$weight_kg,na.rm = TRUE)
+sd(df$weight_kg,na.rm = TRUE)
+# g. Déterminer un tri à plat pour compter les effectifs des modalités de chaque variable *factor* en triant chaque sortie par ordre décroissant.
+sort(table(df$generation),decreasing = FALSE)
+sort(table(df$is_legendary),decreasing = FALSE)
+sort(table(df$type),decreasing = FALSE)
+
+# ## Exercice 3 : Tris et Selections
+# 
+# Pour chaque question suivante, affectez le résultat de la requête dans un objet puis calculez sa dimension. Exemple :
+#   
+#   ```{r}
+# #Selectionnez les deux premières colonnes du data frame
+# requete_0 <- pokemon[,1:2]
+# dim(requete_0)
+# ```
+# 
+# a. Sélectionnez la colonne `nom` et `is_legendary`.
+requete1 <- df["nom"]
+dim(requete1)
+print(requete1)
+requete2 <- df["is_legendary"]
+dim(requete2)
+print(requete2)
+# b. Sélectionnez les 50 premières lignes et les deux premières colonnes.
+requete3 <- df[0:50,c("pokedex_number","nom")] #ligne,colonne
+dim(requete3)
+print(requete3)
+# c. Sélectionnez les 10 premières lignes et toutes les colonnes.
+requete4 <- df[0:10]
+print(requete4)
+# d. Sélectionnez toutes les colonnes sauf la dernière.
+requete5 <- df[,0:9]
+print(requete5)
+# e. Triez le dataset  par ordre alphabétique et afficher le `nom` du pokemon dela première ligne.
+df$nom <- sort(df$nom)
+print(df[1,2])
+# f. Triez le dataset  par `weight_kg` en ordre **décroissant**, et afficher le `nom`du pokemon de la première ligne
+rang <- order( df["weight_kg"],decreasing = TRUE )
+df <- df[ rang , ]
+print(df[1,2])
+# g. Triez le dataset  par `attack` en ordre **décroissant** puis par `speed` en ordre **croissant**, et afficher le `nom` des pokemons des 10 premières lignes.
+rang <- order( df["attack"],decreasing = TRUE )
+df <- df[ rang , ]
+rang <- order( df["speed"],decreasing = FALSE )
+df <- df[ rang , ]
+print(df[1:10,2])
+# ## Exercice 4 : Tris et Filtres
+# 
+# Pour chaque question suivante, affectez le résultat de la requête dans un objet puis calculez sa dimension. Pour faciliter la lecture, sélectionnez la colonne `nom`et les colonnes concernées par le filtre. Exemple :
+#   
+#   ```{r}
+# #Selectionnez les pokemons de type feu
+# requete_0 <- pokemon[ pokemon$type == "fire", c("nom","type")]
+# dim(requete_0)
+# ```
+# 
+# a. Filtrez sur les pokemons qui ont 150 ou plus d'`attack` puis trier le résultat par ordre décroissant d'`attack`.
+requete6 <- df[df$attack >= 150,]
+rang <- order(requete6["attack"],decreasing = TRUE)
+requete6 <- requete6[rang,]
+dim(requete6)
+# b. Filtrez sur les pokemons de `type` *dragon*,*ghost*,*psychic* et *dark*
+requete7 <- df[df$type == "dragon" | df$type == "ghost"|df$type =="psychic"|df$type == "dark",]
+dim(requete7)
+#   c. Filtrez sur les pokemons de `type` *fire* avec plus de 100 d'`attack`, puis trier le résultat par ordre décroissant d'`attack`. 
+requete8 <- df[df$type == "fire"& df$attack >100,]
+rang <- order(requete8["attack"],decreasing = TRUE)
+requete8 <- requete8[rang,]
+dim(requete8)
+# d. Filtrez sur les pokemons qui ont entre 100 et 150 de `speed`. Les trier par `speed` décroissant.
+requete9 <- df[df$speed >= 100 & df$speed <= 150,]
+rang <- order(requete9["speed"],decreasing = TRUE)
+requete9 <- requete9[rang,]
+dim(requete9)
+# e. Filtrez sur les pokémons qui ont des valeurs manquantes sur la variable `height_m`.
+requete10 <- df[is.na(df$height_m)  ,]
+dim(requete10)
+# f. Filtrez sur les pokemons qui ont des valeurs renseignées à la fois pour la variable `weight_kg` **et** la variable `height`.
+requete11 <- df[is.na(df$weight_kg)==FALSE & is.na(df$height_m)==FALSE,]
+dim(requete11)
+# g. Filtrez sur les pokemons pesant plus de 250 kg et affichez le résultat pour vérifier.
+requete12 <- df[df$weight_kg > 250,]
+print(requete12)
